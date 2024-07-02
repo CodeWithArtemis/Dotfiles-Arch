@@ -1,9 +1,8 @@
 local discipline = require("craftzdog.discipline")
 
-local utils = require("base.utils")
+local maps = require("base.utils").get_mappings_template()
 discipline.cowboy()
 
-local maps = require("base.utils").get_mappings_template()
 local keymap = vim.keymap
 local opts = { noremap = true, silent = true }
 

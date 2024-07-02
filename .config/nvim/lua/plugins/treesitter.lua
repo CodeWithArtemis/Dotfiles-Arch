@@ -1,5 +1,7 @@
+local utils = require("base.utils")
+local utils_lsp = require("base.utils.lsp")
 return {
-	{ "nvim-treesitter/playground", cmd = "TSPlaygroundToggle" },
+	{ "nvim-treesitter/playground", cmd = "Tsplaygroundtoggle" },
 
 	{
 		"nvim-treesitter/nvim-treesitter",

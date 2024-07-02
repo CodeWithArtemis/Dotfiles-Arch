@@ -1,9 +1,8 @@
 local discipline = require("craftzdog.discipline")
 
-local utils = require("base.utils")
+local maps = require("base.utils").get_mappings_template()
 discipline.cowboy()
 
-local maps = require("base.utils").get_mappings_template()
 local keymap = vim.keymap
 local opts = { noremap = true, silent = true }
 
@@ -83,17 +82,17 @@ vim.api.nvim_set_keymap(
 		.. "<cmd>CompilerRedo<cr>",
 	{ noremap = true, silent = true }
 )
-maps.n["<leader>c"] = { -- Close window and buffer at the same time.
+maps.n["<leader>x"] = { -- Close window and buffer at the same time.
 	function()
 		require("heirline-components.buffer").wipe()
 	end,
 	desc = "Wipe buffer",
 }
-maps.n["<leader>C"] = { -- Close buffer keeping the window.
+maps.n["<leader>X"] = { -- Close buffer keeping the window.
 	function()
 		require("heirline-components.buffer").close()
 	end,
 	desc = "Close buffer",
 }
--- Toggle compiler results
+
 vim.api.nvim_set_keymap("n", "<S-F7>", "<cmd>CompilerToggleResults<cr>", { noremap = true, silent = true })

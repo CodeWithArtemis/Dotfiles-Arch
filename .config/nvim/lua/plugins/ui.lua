@@ -53,11 +53,119 @@ return {
 		end,
 	},
 
+	--  UI icons [icons]
+	--  https://github.com/nvim-tree/nvim-web-devicons
+	{
+		"nvim-tree/nvim-web-devicons",
+		enabled = vim.g.icons_enabled,
+		event = "User BaseDefered",
+		opts = {
+			override = {
+				default_icon = {
+					icon = require("base.utils").get_icon("DefaultFile"),
+					name = "default",
+				},
+				deb = { icon = "", name = "Deb" },
+				lock = { icon = "󰌾", name = "Lock" },
+				mp3 = { icon = "󰎆", name = "Mp3" },
+				mp4 = { icon = "", name = "Mp4" },
+				out = { icon = "", name = "Out" },
+				["robots.txt"] = { icon = "󰚩", name = "Robots" },
+				ttf = { icon = "", name = "TrueTypeFont" },
+				rpm = { icon = "", name = "Rpm" },
+				woff = { icon = "", name = "WebOpenFontFormat" },
+				woff2 = { icon = "", name = "WebOpenFontFormat2" },
+				xz = { icon = "", name = "Xz" },
+				zip = { icon = "", name = "Zip" },
+			},
+		},
+		config = function(_, opts)
+			require("nvim-web-devicons").setup(opts)
+			pcall(vim.api.nvim_del_user_command, "NvimWebDeviconsHiTest")
+		end,
+	},
+
+	{
+		"folke/which-key.nvim",
+		event = "User BaseDefered",
+		opts = {
+			icons = { group = vim.g.icons_enabled and "" or "+", separator = "" },
+			disable = { filetypes = { "TelescopePrompt" } },
+		},
+		config = function(_, opts)
+			require("which-key").setup(opts)
+			require("base.utils").which_key_register()
+		end,
+	},
+
+	{
+		"tzachar/highlight-undo.nvim",
+		event = "User BaseDefered",
+		opts = {
+			hlgroup = "CurSearch",
+			duration = 150,
+			keymaps = {
+				{ "n", "u", "undo", {} }, -- If you remap undo/redo, change this
+				{ "n", "<C-r>", "redo", {} },
+			},
+		},
+		config = function(_, opts)
+			require("highlight-undo").setup(opts)
+
+			-- Also flash on yank.
+			vim.api.nvim_create_autocmd("TextYankPost", {
+				desc = "Highlight yanked text",
+				pattern = "*",
+				callback = function()
+					vim.highlight.on_yank()
+				end,
+			})
+		end,
+	},
+
 	{
 		"rcarriga/nvim-notify",
-		opts = {
-			timeout = 400,
-		},
+		event = "User BaseDefered",
+		opts = function()
+			local fps
+			if is_android then
+				fps = 30
+			else
+				fps = 144
+			end
+
+			return {
+				timeout = 2000,
+				fps = fps,
+				max_height = function()
+					return math.floor(vim.o.lines * 0.25)
+				end,
+				max_width = function()
+					return math.floor(vim.o.columns * 0.25)
+				end,
+				on_open = function(win)
+					-- enable markdown support on notifications
+					vim.api.nvim_win_set_config(win, { zindex = 175 })
+					if not vim.g.notifications_enabled then
+						vim.api.nvim_win_close(win, true)
+					end
+					if not package.loaded["nvim-treesitter"] then
+						pcall(require, "nvim-treesitter")
+					end
+					vim.wo[win].conceallevel = 3
+					local buf = vim.api.nvim_win_get_buf(win)
+					if not pcall(vim.treesitter.start, buf, "markdown") then
+						vim.bo[buf].syntax = "markdown"
+					end
+					vim.wo[win].spell = false
+				end,
+			}
+		end,
+		config = function(_, opts)
+			local notify = require("notify")
+			notify.setup(opts)
+			vim.notify = notify
+		end,
 	},
 
 	-- animations
