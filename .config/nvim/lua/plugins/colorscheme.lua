@@ -1,4 +1,5 @@
 return {
+	{ "rmehri01/onenord.nvim" },
 	{
 		"arcticicestudio/nord-vim",
 	},
